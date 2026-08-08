@@ -1,0 +1,11 @@
+{
+  "model": 1,
+  "branches": ["oa", "sat"],
+  "default_locales": { "oa": "en-GB", "sat": "en-US" },
+  "id_regex": "^(oa|sat)\\.[a-z0-9]+(\\.[a-z0-9]+)*$",
+  "frontmatter": {
+    "required": ["id", "type", "branch"],
+    "type_enum": ["unit", "lesson", "activity", "card", "alignment", "scope", "asset-pack", "sound-variant", "phoneme"]
+  },
+  "note": "Boundary/format contract v1. see docs/adr/0005, docs/adr/0006."
+}

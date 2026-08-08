@@ -1,3 +1,17 @@
 .DS_Store
 __pycache__/
 *.pyc
+
+# learner data never enters this repository (ADR-0002)
+content/data/
+learner_planes/
+
+# build artifacts & deps
+node_modules/
+dist/
+build/
+out/
+*.log
+.pytest_cache/
+.mypy_cache/
+.venv/
