@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kapisko Academy · Weekly Phonics Pathway</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="styles/tokens.css" />
+        <link rel="stylesheet" href="styles/base.css" />
+        <link rel="stylesheet" href="styles/components.css" />
+        <link rel="stylesheet" href="styles/layout.css" />
+    </head>
+    <body>
+        <aside class="side" id="side" aria-label="Learner profiles">
+            <div class="side-brand">
+                <span class="brand-mark" data-icon="book" aria-hidden="true"></span>
+                <div class="brand-text"><strong>Kapisko Academy</strong><span>Learning together</span></div>
+            </div>
+
+            <kal-profile-list class="side-section"></kal-profile-list>
+
+            <div class="side-foot">
+                <button class="side-link" id="settingsBtn" data-icon="gear">Settings</button>
+                <button class="side-link" id="reportsBtn" data-icon="chart">Progress reports</button>
+                <div class="side-version">Kapisko · Term 1 · v2.4</div>
+            </div>
+        </aside>
+
+        <div class="backdrop" id="backdrop"></div>
+
+        <main class="main">
+            <header class="topbar">
+                <button class="icon-btn menu-btn" id="menuBtn" data-icon="menu" aria-label="Open learner menu"></button>
+                <nav class="crumb" aria-label="Breadcrumb">
+                    <a href="#">Home</a><span aria-hidden="true">/</span>
+                    <a href="#">Phonics</a><span aria-hidden="true">/</span>
+                    <span>Weekly Pathway</span>
+                </nav>
+                <div class="top-right">
+                    <label class="field search">
+                        <span class="f-icon" data-icon="search"></span>
+                        <input
+                            id="search"
+                            type="search"
+                            placeholder="Search lessons or sounds…"
+                            autocomplete="off"
+                            aria-label="Search lessons or sounds"
+                        />
+                    </label>
+                    <button class="icon-btn" id="bellBtn" data-icon="bell" aria-label="Notifications"><span class="dot"></span></button>
+                    <kal-top-avatar class="avatar avatar-top" id="topAvatar" aria-label="Switch learner"></kal-top-avatar>
+                </div>
+            </header>
+
+            <div class="page">
+                <kal-strip class="strip" aria-label="Learner profiles"></kal-strip>
+
+                <section class="hero reveal lift" style="--d: 0.02s">
+                    <div class="hero-main">
+                        <span class="eyebrow">Week 12 · Phonics · Term 1</span>
+                        <h1 id="greeting">Good morning, Mia.</h1>
+                        <p class="hero-sub">
+                            One sound, many spellings. This week we get to know<br />
+                            <span class="sound-tile">/ee/</span>
+                            <span class="hero-subdim" style="color: var(--ink-3)">&nbsp;and the four ways to write it.</span>
+                        </p>
+                        <p class="hero-meta">5 days · 25 steps · a new spelling each day</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" id="startBtn" data-icon="arrow">Start today’s lesson</button>
+                            <button class="btn btn-ghost" id="audioBtn" data-icon="speaker">Hear the sound</button>
+                        </div>
+                    </div>
+
+                    <aside class="hero-side lift">
+                        <div class="hs-head"><span>Sound variants this week</span><span class="hs-badge">4 spellings</span></div>
+                        <div class="variant-row" id="variantRow">
+                            <button class="variant variant-lg" data-speak="ee">ee</button>
+                            <button class="variant variant-lg" data-speak="ea">ea</button>
+                            <button class="variant variant-lg" data-speak="e_e">e_e</button>
+                            <button class="variant variant-lg" data-speak="ey">ey</button>
+                        </div>
+                        <p class="legend">
+                            <span class="sw"></span> Mustard tiles mark special phonetic rules — the same
+                            sound hiding in different spellings.
+                            <em style="font-style: normal; color: var(--ink-3)">(“ey”, as in key, joins us next week.)</em>
+                        </p>
+                        <div class="hs-prog">
+                            <div class="hs-prog-top"><span>Week progress</span><strong id="weekPct">0%</strong></div>
+                            <div class="bar"><i id="weekBar"></i></div>
+                        </div>
+                    </aside>
+                </section>
+
+                <kal-week-pathway style="--d: 0.06s"></kal-week-pathway>
+
+            </div>
+
+            <footer class="foot">Made with care · Kapisko Academy (Not-for-profit) · Open source curriculum</footer>
+        </main>
+
+        <kal-card-box></kal-card-box>
+        <kal-snackbar class="snack" role="status" aria-live="polite"></kal-snackbar>
+
+        <script type="module" src="src/main.js"></script>
+    </body>
+</html>

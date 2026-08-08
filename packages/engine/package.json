@@ -1,0 +1,13 @@
+{
+  "name": "@kapisko/engine",
+  "version": "0.1.0",
+  "description": "Pure, deterministic retention scheduler (ADR-0008). Reads Learning Events, derives schedules and Mastery Gates. Never writes.",
+  "type": "module",
+  "main": "engine.js",
+  "exports": {
+    ".": "./engine.js"
+  },
+  "scripts": {
+    "test": "node --test test.mjs"
+  }
+}

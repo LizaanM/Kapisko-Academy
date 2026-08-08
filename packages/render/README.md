@@ -1,14 +1,34 @@
 # packages/render
 
-Single content → HTML renderer shared by both the web app and the print pipeline (ADR-0010).
+Single content → artefact renderer shared by the web app and print pipeline
+(ADR-0010). Reads Markdown + frontmatter from `content/branches/<branch>/`,
+emits:
 
-Markdown + frontmatter content is compiled once to a canonical HTML document; the dashboard serves it as an interactive shell, and the print app re-styles the same HTML via paged-media CSS to produce deterministic PDFs.
+- `apps/web/release/<branch>.json` — the canonical read-model the dashboard fetches
+  (unit, days/steps, sound variants, each item with a stable id for the engine).
+- `apps/print/release/<unit-id>.html` — a standalone printable lesson-plan document
+- `apps/web/release/engine.js` — the retention engine bundled for browser consumers
 
-## Layout (planned)
+Deterministic: same content in → same bytes out.
+
+## Usage
+
+```sh
+python3 packages/render/render.py [branch]
+```
+
+Run after editing `content/`; CI re-runs it (ADR-0009).
+
+## Inputs
+
+- `content/branches/<branch>/phonics/units/<unit>/unit.md`        — type: unit
+- `content/branches/<branch>/phonics/units/<unit>/lessons/*.md`   — type: lesson (steps JSON block)
+- `content/branches/<branch>/phonics/units/<unit>/variants.md`    — type: sound-variant table
+
+## Layout
 
 packages/render/
-    ├── md/            # markdown → HTML core
-    ├── shell/         # dashboard chrome (the prototype lives in apps/web)
-    └── print/         # @page / paged-media stylesheets
+    ├── render.py   # content → JSON + HTML (pure stdlib)
+    └── README.md
 
-No "print edition" content exists; print styling is a renderer concern.
+No "print edition" content exists; styling is a renderer concern.

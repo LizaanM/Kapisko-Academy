@@ -1,0 +1,47 @@
+:root {
+    /* Palette — warm pastels on cream */
+    --cream: #faf5eb;
+    --cream-2: #f3ecdc;
+    --card: #ffffff;
+    --ink: #2b2418;
+    --ink-2: #6f6657;
+    --ink-3: #a0947f;
+    --line: #e8e0cf;
+    --line-2: #d8cdb6;
+
+    --mustard: #f5e29b;
+    --mustard-2: #fbefc4;
+    --mustard-deep: #e8cb5f;
+
+    --peach: #ffd9c2;
+    --peach-deep: #f3a277;
+    --sky: #d9eaf7;
+    --sky-deep: #8fc4ea;
+    --mint: #dcede2;
+    --mint-deep: #83c4a0;
+    --lilac: #eae0f5;
+    --lilac-deep: #b296d8;
+    --rose: #f8dce3;
+    --rose-deep: #e39db3;
+    --butter-deep: #eed58a;
+
+    /* Radius — 4px standard, scaled up for structural cards */
+    --r-sm: 4px;
+    --r-md: 10px;
+    --r-card: 20px;
+    --r-hero: 26px;
+
+    /* Material elevation ladder (warm-tinted, 2-layer shadows) */
+    --e-0: none;
+    --e-1: 0 1px 2px 0 rgba(61, 46, 28, 0.12), 0 1px 3px 1px rgba(61, 46, 28, 0.08);
+    --e-2: 0 1px 2px 0 rgba(61, 46, 28, 0.12), 0 2px 6px 2px rgba(61, 46, 28, 0.08);
+    --e-3: 0 1px 3px 0 rgba(61, 46, 28, 0.12), 0 4px 8px 3px rgba(61, 46, 28, 0.08);
+    --e-4: 0 2px 3px 0 rgba(61, 46, 28, 0.14), 0 6px 10px 4px rgba(61, 46, 28, 0.09);
+    --e-6: 0 2px 3px 0 rgba(61, 46, 28, 0.15), 0 8px 12px 5px rgba(61, 46, 28, 0.11);
+    --e-8: 0 4px 4px 0 rgba(61, 46, 28, 0.16), 0 8px 12px 6px rgba(61, 46, 28, 0.12);
+    --e-16: 0 8px 8px 0 rgba(61, 46, 28, 0.16), 0 16px 20px 10px rgba(61, 46, 28, 0.13);
+    --e-24: 0 10px 10px 0 rgba(61, 46, 28, 0.17), 0 24px 30px 12px rgba(61, 46, 28, 0.14);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --side-w: 268px;
+}
