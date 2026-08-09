@@ -513,7 +513,7 @@ body.onboarding {
 /* The welcome card floats over the artwork: a faint centred glow instead of a
    solid panel, pushed down so the "A Culture of Reading" dome stays clear. */
 .on-welcome {
-    padding: 40px 20px 36px;
+    padding: 38px 20px 36px;
     margin-top: clamp(24px, 7vh, 72px);
     background: radial-gradient(
         130% 115% at 50% 28%,
