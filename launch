@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Kapisko launch — serve (if needed) and open the app in your browser.
+#
+# - If nothing is already listening on the port, starts the instance server
+#   (apps/web/server.py) in the background, waiting until it responds.
+# - Then opens the default browser at http://localhost:<port>.
+# - If you're already running `./serve` in another terminal, ./launch simply
+#   opens the browser — same port, no second server.
+#
+# Usage:  ./launch [port]        (default port 8000)
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+PORT="${1:-8000}"
+URL="http://localhost:${PORT}"
+LOG="${TMPDIR:-/tmp}/kapisko-server.log"
+
+if ! curl -s -o /dev/null --max-time 1 "${URL}/"; then
+  echo "Starting the Kapisko instance server on port ${PORT}..."
+  nohup "${ROOT}/serve" "${PORT}" >>"${LOG}" 2>&1 &
+  for _ in {1..40}; do
+    if curl -s -o /dev/null --max-time 1 "${URL}/"; then
+      break
+    fi
+    sleep 0.25
+  done
+  if ! curl -s -o /dev/null --max-time 1 "${URL}/"; then
+    echo "The server did not come up. See ${LOG}" >&2
+    exit 1
+  fi
+fi
+
+echo "Opening ${URL} ..."
+case "$(uname)" in
+  Darwin) open "${URL}" ;;
+  Linux) xdg-open "${URL}" >/dev/null 2>&1 || echo "Open ${URL} in your browser manually." ;;
+  *) echo "Open ${URL} in your browser manually." ;;
+esac

@@ -1,6 +1,6 @@
 # `oa` branch — Cambridge O/A-Level curriculum
 
-Grade R to 12, aligned to Cambridge IGCSE / O-Level / A-Level pathway. Default locale: `en-GB`.
+Reception (Grade R) to year 13, aligned to Cambridge IGCSE / O-Level / A-Level pathway. Default locale: `en-GB`.
 
 This branch owns **all** of its content. Directory layout (v1):
 

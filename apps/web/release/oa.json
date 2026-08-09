@@ -1,261 +1,261 @@
 {
-  "model": 1,
-  "branch": "oa",
-  "locale": "en-GB",
-  "unit": {
-    "id": "oa.ph.g0r.u12.unit",
-    "title": "One sound, many spellings — the /ee/ family",
+    "model": 1,
     "branch": "oa",
     "locale": "en-GB",
-    "focus": "/ee/",
-    "grade": "g0r",
-    "minutes_per_session": 25,
-    "mastery_gate": "independent accuracy >= 90% + spaced retrieval review"
-  },
-  "days": [
-    {
-      "id": "oa.ph.g0r.u12.d1",
-      "name": "Monday",
-      "spell": "ee",
-      "variant": false,
-      "focus": "Meet the sound",
-      "accent": "peach",
-      "mins": 25,
-      "steps": [
+    "unit": {
+        "id": "oa.ph.g0r.u12.unit",
+        "title": "One sound, many spellings — the /ee/ family",
+        "branch": "oa",
+        "locale": "en-GB",
+        "focus": "/ee/",
+        "year_group": "g0r",
+        "minutes_per_session": 25,
+        "mastery_gate": "independent accuracy >= 90% + spaced retrieval review"
+    },
+    "days": [
         {
-          "t": "Warm-Up",
-          "n": "Oral blending warm-up",
-          "k": "warm",
-          "id": "oa.ph.g0r.u12.d1.s1"
+            "id": "oa.ph.g0r.u12.d1",
+            "name": "Monday",
+            "spell": "ee",
+            "variant": false,
+            "focus": "Meet the sound",
+            "accent": "peach",
+            "mins": 25,
+            "steps": [
+                {
+                    "t": "Warm-Up",
+                    "n": "Oral blending warm-up",
+                    "k": "warm",
+                    "id": "oa.ph.g0r.u12.d1.s1"
+                },
+                {
+                    "t": "Hear & Say",
+                    "n": "Catch the /ee/ sounds",
+                    "k": "hear",
+                    "id": "oa.ph.g0r.u12.d1.s2"
+                },
+                {
+                    "t": "New Grapheme",
+                    "n": "Shape-trace “ee”",
+                    "k": "new",
+                    "id": "oa.ph.g0r.u12.d1.s3"
+                },
+                {
+                    "t": "Blend & Read",
+                    "n": "seed · sheep · green",
+                    "k": "read",
+                    "id": "oa.ph.g0r.u12.d1.s4"
+                },
+                {
+                    "t": "Segment & Write",
+                    "n": "Dictation: “feel”",
+                    "k": "write",
+                    "id": "oa.ph.g0r.u12.d1.s5"
+                }
+            ],
+            "unit": "oa.ph.g0r.u12.unit"
         },
         {
-          "t": "Hear & Say",
-          "n": "Catch the /ee/ sounds",
-          "k": "hear",
-          "id": "oa.ph.g0r.u12.d1.s2"
+            "id": "oa.ph.g0r.u12.d2",
+            "name": "Tuesday",
+            "spell": "ea",
+            "variant": true,
+            "focus": "A different spelling",
+            "accent": "sky",
+            "mins": 20,
+            "steps": [
+                {
+                    "t": "Warm-Up",
+                    "n": "Flashcard review of “ee”",
+                    "k": "warm",
+                    "id": "oa.ph.g0r.u12.d2.s1"
+                },
+                {
+                    "t": "Hear & Say",
+                    "n": "Tap /ee/ inside “leaf”",
+                    "k": "hear",
+                    "id": "oa.ph.g0r.u12.d2.s2"
+                },
+                {
+                    "t": "Variant Grapheme",
+                    "n": "New spelling “ea”",
+                    "k": "new",
+                    "id": "oa.ph.g0r.u12.d2.s3"
+                },
+                {
+                    "t": "Blend & Read",
+                    "n": "leaf · bean · beach",
+                    "k": "read",
+                    "id": "oa.ph.g0r.u12.d2.s4"
+                },
+                {
+                    "t": "Segment & Write",
+                    "n": "Dictation: “meat”",
+                    "k": "write",
+                    "id": "oa.ph.g0r.u12.d2.s5"
+                }
+            ],
+            "unit": "oa.ph.g0r.u12.unit"
         },
         {
-          "t": "New Grapheme",
-          "n": "Shape-trace “ee”",
-          "k": "new",
-          "id": "oa.ph.g0r.u12.d1.s3"
+            "id": "oa.ph.g0r.u12.d3",
+            "name": "Wednesday",
+            "spell": "e_e",
+            "variant": true,
+            "focus": "The magic e",
+            "accent": "mint",
+            "mins": 25,
+            "steps": [
+                {
+                    "t": "Warm-Up",
+                    "n": "Spot the split digraph",
+                    "k": "warm",
+                    "id": "oa.ph.g0r.u12.d3.s1"
+                },
+                {
+                    "t": "Hear & Say",
+                    "n": "The silent e stays quiet",
+                    "k": "hear",
+                    "id": "oa.ph.g0r.u12.d3.s2"
+                },
+                {
+                    "t": "Variant Grapheme",
+                    "n": "New spelling “e_e”",
+                    "k": "new",
+                    "id": "oa.ph.g0r.u12.d3.s3"
+                },
+                {
+                    "t": "Blend & Read",
+                    "n": "these · theme · delete",
+                    "k": "read",
+                    "id": "oa.ph.g0r.u12.d3.s4"
+                },
+                {
+                    "t": "Quick Check",
+                    "n": "Star quiz — 5 words",
+                    "k": "celeb",
+                    "id": "oa.ph.g0r.u12.d3.s5"
+                }
+            ],
+            "unit": "oa.ph.g0r.u12.unit"
         },
         {
-          "t": "Blend & Read",
-          "n": "seed · sheep · green",
-          "k": "read",
-          "id": "oa.ph.g0r.u12.d1.s4"
+            "id": "oa.ph.g0r.u12.d4",
+            "name": "Thursday",
+            "spell": "ee · ea · e_e",
+            "variant": true,
+            "focus": "Mix it up",
+            "accent": "lilac",
+            "mins": 30,
+            "steps": [
+                {
+                    "t": "Warm-Up",
+                    "n": "Flip cards for all 3 spellings",
+                    "k": "warm",
+                    "id": "oa.ph.g0r.u12.d4.s1"
+                },
+                {
+                    "t": "Word Sort",
+                    "n": "sleep / leaf / theme",
+                    "k": "sort",
+                    "id": "oa.ph.g0r.u12.d4.s2"
+                },
+                {
+                    "t": "Read a Story",
+                    "n": "“The Green Sheep”",
+                    "k": "read",
+                    "id": "oa.ph.g0r.u12.d4.s3"
+                },
+                {
+                    "t": "Sound Hunt",
+                    "n": "Hunt /ee/ around the room",
+                    "k": "hear",
+                    "id": "oa.ph.g0r.u12.d4.s4"
+                },
+                {
+                    "t": "Write a Sentence",
+                    "n": "Build: “I see the tree.”",
+                    "k": "write",
+                    "id": "oa.ph.g0r.u12.d4.s5"
+                }
+            ],
+            "unit": "oa.ph.g0r.u12.unit"
         },
         {
-          "t": "Segment & Write",
-          "n": "Dictation: “feel”",
-          "k": "write",
-          "id": "oa.ph.g0r.u12.d1.s5"
+            "id": "oa.ph.g0r.u12.d5",
+            "name": "Friday",
+            "spell": "all variants",
+            "variant": true,
+            "focus": "Show what you know",
+            "accent": "rose",
+            "mins": 20,
+            "steps": [
+                {
+                    "t": "Warm-Up",
+                    "n": "Beat the timer — 20 sounds",
+                    "k": "warm",
+                    "id": "oa.ph.g0r.u12.d5.s1"
+                },
+                {
+                    "t": "Dictation",
+                    "n": "Ten /ee/ words",
+                    "k": "write",
+                    "id": "oa.ph.g0r.u12.d5.s2"
+                },
+                {
+                    "t": "Independent Reading",
+                    "n": "Read aloud to a grown-up",
+                    "k": "read",
+                    "id": "oa.ph.g0r.u12.d5.s3"
+                },
+                {
+                    "t": "Star Chart",
+                    "n": "Colour today’s star",
+                    "k": "celeb",
+                    "id": "oa.ph.g0r.u12.d5.s4"
+                },
+                {
+                    "t": "Week Review",
+                    "n": "Celebrate five days of learning",
+                    "k": "celeb",
+                    "id": "oa.ph.g0r.u12.d5.s5"
+                }
+            ],
+            "unit": "oa.ph.g0r.u12.unit"
         }
-      ],
-      "unit": "oa.ph.g0r.u12.unit"
-    },
-    {
-      "id": "oa.ph.g0r.u12.d2",
-      "name": "Tuesday",
-      "spell": "ea",
-      "variant": true,
-      "focus": "A different spelling",
-      "accent": "sky",
-      "mins": 20,
-      "steps": [
+    ],
+    "variants": [
         {
-          "t": "Warm-Up",
-          "n": "Flashcard review of “ee”",
-          "k": "warm",
-          "id": "oa.ph.g0r.u12.d2.s1"
+            "id": "oa.ph.g0r.u12.unit.sv.ee",
+            "phoneme": "/ee/",
+            "grapheme": "ee",
+            "kind": "base",
+            "word": "seed",
+            "example": "seed"
         },
         {
-          "t": "Hear & Say",
-          "n": "Tap /ee/ inside “leaf”",
-          "k": "hear",
-          "id": "oa.ph.g0r.u12.d2.s2"
+            "id": "oa.ph.g0r.u12.unit.sv.ea",
+            "phoneme": "/ee/",
+            "grapheme": "ea",
+            "kind": "variant",
+            "word": "leaf",
+            "example": "leaf"
         },
         {
-          "t": "Variant Grapheme",
-          "n": "New spelling “ea”",
-          "k": "new",
-          "id": "oa.ph.g0r.u12.d2.s3"
+            "id": "oa.ph.g0r.u12.unit.sv.e_e",
+            "phoneme": "/ee/",
+            "grapheme": "e_e",
+            "kind": "split digraph",
+            "word": "theme",
+            "example": "theme"
         },
         {
-          "t": "Blend & Read",
-          "n": "leaf · bean · beach",
-          "k": "read",
-          "id": "oa.ph.g0r.u12.d2.s4"
-        },
-        {
-          "t": "Segment & Write",
-          "n": "Dictation: “meat”",
-          "k": "write",
-          "id": "oa.ph.g0r.u12.d2.s5"
+            "id": "oa.ph.g0r.u12.unit.sv.ey",
+            "phoneme": "/ee/",
+            "grapheme": "ey",
+            "kind": "variant",
+            "word": "key",
+            "example": "key"
         }
-      ],
-      "unit": "oa.ph.g0r.u12.unit"
-    },
-    {
-      "id": "oa.ph.g0r.u12.d3",
-      "name": "Wednesday",
-      "spell": "e_e",
-      "variant": true,
-      "focus": "The magic e",
-      "accent": "mint",
-      "mins": 25,
-      "steps": [
-        {
-          "t": "Warm-Up",
-          "n": "Spot the split digraph",
-          "k": "warm",
-          "id": "oa.ph.g0r.u12.d3.s1"
-        },
-        {
-          "t": "Hear & Say",
-          "n": "The silent e stays quiet",
-          "k": "hear",
-          "id": "oa.ph.g0r.u12.d3.s2"
-        },
-        {
-          "t": "Variant Grapheme",
-          "n": "New spelling “e_e”",
-          "k": "new",
-          "id": "oa.ph.g0r.u12.d3.s3"
-        },
-        {
-          "t": "Blend & Read",
-          "n": "these · theme · delete",
-          "k": "read",
-          "id": "oa.ph.g0r.u12.d3.s4"
-        },
-        {
-          "t": "Quick Check",
-          "n": "Star quiz — 5 words",
-          "k": "celeb",
-          "id": "oa.ph.g0r.u12.d3.s5"
-        }
-      ],
-      "unit": "oa.ph.g0r.u12.unit"
-    },
-    {
-      "id": "oa.ph.g0r.u12.d4",
-      "name": "Thursday",
-      "spell": "ee · ea · e_e",
-      "variant": true,
-      "focus": "Mix it up",
-      "accent": "lilac",
-      "mins": 30,
-      "steps": [
-        {
-          "t": "Warm-Up",
-          "n": "Flip cards for all 3 spellings",
-          "k": "warm",
-          "id": "oa.ph.g0r.u12.d4.s1"
-        },
-        {
-          "t": "Word Sort",
-          "n": "sleep / leaf / theme",
-          "k": "sort",
-          "id": "oa.ph.g0r.u12.d4.s2"
-        },
-        {
-          "t": "Read a Story",
-          "n": "“The Green Sheep”",
-          "k": "read",
-          "id": "oa.ph.g0r.u12.d4.s3"
-        },
-        {
-          "t": "Sound Hunt",
-          "n": "Hunt /ee/ around the room",
-          "k": "hear",
-          "id": "oa.ph.g0r.u12.d4.s4"
-        },
-        {
-          "t": "Write a Sentence",
-          "n": "Build: “I see the tree.”",
-          "k": "write",
-          "id": "oa.ph.g0r.u12.d4.s5"
-        }
-      ],
-      "unit": "oa.ph.g0r.u12.unit"
-    },
-    {
-      "id": "oa.ph.g0r.u12.d5",
-      "name": "Friday",
-      "spell": "all variants",
-      "variant": true,
-      "focus": "Show what you know",
-      "accent": "rose",
-      "mins": 20,
-      "steps": [
-        {
-          "t": "Warm-Up",
-          "n": "Beat the timer — 20 sounds",
-          "k": "warm",
-          "id": "oa.ph.g0r.u12.d5.s1"
-        },
-        {
-          "t": "Dictation",
-          "n": "Ten /ee/ words",
-          "k": "write",
-          "id": "oa.ph.g0r.u12.d5.s2"
-        },
-        {
-          "t": "Independent Reading",
-          "n": "Read aloud to a grown-up",
-          "k": "read",
-          "id": "oa.ph.g0r.u12.d5.s3"
-        },
-        {
-          "t": "Star Chart",
-          "n": "Colour today’s star",
-          "k": "celeb",
-          "id": "oa.ph.g0r.u12.d5.s4"
-        },
-        {
-          "t": "Week Review",
-          "n": "Celebrate five days of learning",
-          "k": "celeb",
-          "id": "oa.ph.g0r.u12.d5.s5"
-        }
-      ],
-      "unit": "oa.ph.g0r.u12.unit"
-    }
-  ],
-  "variants": [
-    {
-      "id": "oa.ph.g0r.u12.unit.sv.ee",
-      "phoneme": "/ee/",
-      "grapheme": "ee",
-      "kind": "base",
-      "word": "seed",
-      "example": "seed"
-    },
-    {
-      "id": "oa.ph.g0r.u12.unit.sv.ea",
-      "phoneme": "/ee/",
-      "grapheme": "ea",
-      "kind": "variant",
-      "word": "leaf",
-      "example": "leaf"
-    },
-    {
-      "id": "oa.ph.g0r.u12.unit.sv.e_e",
-      "phoneme": "/ee/",
-      "grapheme": "e_e",
-      "kind": "split digraph",
-      "word": "theme",
-      "example": "theme"
-    },
-    {
-      "id": "oa.ph.g0r.u12.unit.sv.ey",
-      "phoneme": "/ee/",
-      "grapheme": "ey",
-      "kind": "variant",
-      "word": "key",
-      "example": "key"
-    }
-  ]
+    ]
 }

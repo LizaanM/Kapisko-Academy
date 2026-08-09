@@ -10,7 +10,7 @@ html {
 
 body {
     margin: 0;
-    font-family: "Inclusive Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 15px;
     line-height: 1.5;
     color: var(--ink);
@@ -83,4 +83,36 @@ p {
 a {
     color: inherit;
     text-decoration: none;
+}
+
+/* file:// guard — friendly notice instead of a dead static shell */
+.served-over-http {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    align-content: center;
+    padding: 24px;
+    text-align: center;
+    background: var(--cream);
+    color: var(--ink);
+}
+
+.served-over-http b {
+    font-size: 1.3rem;
+}
+
+.served-over-http span {
+    max-width: 420px;
+    color: var(--ink-2);
+    line-height: 1.55;
+}
+
+.served-over-http code {
+    padding: 1px 6px;
+    border-radius: var(--r-sm);
+    background: var(--cream-2);
+    color: var(--ink);
 }

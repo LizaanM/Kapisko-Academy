@@ -1,6 +1,6 @@
 # Kapisko Academy
 
-Open-source Christian education, Grade R to 12, from two fully independent curricula — the `oa` branch (Cambridge O/A-Level path) and the `sat` branch (US AP/SAT path). Built on the ethos in `README.MD`: synthetic phonics, explicit instruction with mastery-based progression (the 90% rule), and evidence-based retention (spaced repetition, active retrieval, interleaving).
+Open-source Christian education, Reception (Grade R) to Year 13, from two fully independent curricula — the `oa` branch (Cambridge O/A-Level path) and the `sat` branch (US AP/SAT path). Built on the ethos in `README.MD`: synthetic phonics, explicit instruction with mastery-based progression (the 90% rule), and evidence-based retention (spaced repetition, active retrieval, interleaving).
 
 The repository is **content-first**: curriculum and materials live in `content/` as versioned text files, and every program (web app, print, Anki bridge) is a generated consumer of that content. Learner data never lives here.
 
@@ -24,15 +24,15 @@ _Avoid_: "the materials", "the resources"
 All private per-child data — learning events, the mastery state of the moment, and the retention schedule. Grows purely from events; never enters this repository (ADR-0002).
 _Avoid_: progress (when you mean mastery state), result
 
-**Grade**:
-An academic year band, Grade R (Reception) through Grade 12. Every branch organizes itself by Grade.
+**Year Group**:
+An academic year band, Reception (Grade R) through Year 13. Every branch organizes itself by year group.
 
 **Phase**:
-A curriculum-design block spanning several grades (e.g. phonics Phase 1, Phase 2). Contrast with **Grade**, which is a calendar organizational unit.
+A curriculum-design block spanning several Year Groups (e.g. phonics Phase 1, Phase 2). Contrast with **year group**, which is a calendar organizational unit.
 _Avoid_: level, band
 
 **Scope & Sequence**:
-The chronological progression of a branch through grades, semesters and units, including the day/week layout of the pathway. The "weekly lesson pathway" on the dashboard renders this.
+The chronological progression of a branch through year groups, semesters and units, including the day/week layout of the pathway. The "weekly lesson pathway" on the dashboard renders this.
 _Avoid_: curriculum map, syllabus
 
 **Unit**:
@@ -45,7 +45,7 @@ A subject cluster (phonics, literacy, maths, scripture, computing…). Naming is
 ### Content objects
 
 **Learning Item**:
-Any addressable node in the Scope & Sequence that a mastery gate, alignment or card can point at (grade → discipline → unit → session). Items carry stable **IDs** (ADR-0006).
+Any addressable node in the Scope & Sequence that a mastery gate, alignment or card can point at (year group → discipline → unit → session). Items carry stable **IDs** (ADR-0006).
 _Avoid_: learning object, resource
 
 **Lesson**:
@@ -72,8 +72,8 @@ _Avoid_: letter-sound, sound (when you mean phoneme)
 The written shape standing for a phoneme (one or more letters).
 
 **Sound Variant**:
-One of multiple consistent spellings of a single phoneme (e.g. /ee/ = ee, ea, e_e, ey). In the UI, variants render as mustard tiles.
-_Avoid_: "alternate spelling" when you mean sound variant
+One of multiple consistent spellings of a single phoneme (e.g. /ee/ = ee, ea, e*e, ey). In the UI, variants render as mustard tiles.
+\_Avoid*: "alternate spelling" when you mean sound variant
 
 ### Assessment & memory
 
@@ -104,7 +104,7 @@ A self-hosted running install of the platform (a home, a school). Instances own 
 
 ## Relationships
 
-- A **Branch** spans **Grades**; each **Grade** is a **Scope & Sequence** of **Units**.
+- A **Branch** spans **Year Groups**; each **Year Group** is a **Scope & Sequence** of **Units**.
 - A **Unit** contains **Lessons**; each **Lesson** is a family of **Activities** ending in a **Mastery Gate**.
 - An **Alignment** is a mapping record from a **Learning Item** to an external standard code (Cambridge/AP/SAT). Alignments live in the **Curriculum plane** and reference items by id — they never repeat teaching content.
 - A **Sound Variant** publishes a **Grapheme** for one **Phoneme**; a phoneme may have many variants.

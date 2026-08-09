@@ -11,7 +11,12 @@ class KalProfileList extends HTMLElement {
     this.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-id]");
       if (btn) store.set("profile", btn.dataset.id);
-      else if (e.target.closest("[data-add]")) window.dispatchEvent(new CustomEvent("kal:addlearner"));
+      else if (e.target.closest("[data-add]")) document.dispatchEvent(new CustomEvent("kal:addlearner"));
+      else if (e.target.closest("[data-remove]")) {
+        document.dispatchEvent(
+          new CustomEvent("kal:removelearner", { detail: { id: e.target.closest("[data-remove]").dataset.remove } }),
+        );
+      }
     });
     this.render();
   }
@@ -23,16 +28,19 @@ class KalProfileList extends HTMLElement {
       <nav class="profiles" aria-label="Switch learner">${profiles
       .map(
         (p) => `
-        <button class="profile lift ${p.id === active ? "is-active" : ""}" data-id="${p.id}"
-          aria-pressed="${p.id === active}" aria-label="Switch to ${p.name}">
-          <span class="avatar av-${p.colour}">${p.init}</span>
-          <span class="p-meta"><b>${p.name}</b><small>${p.meta}</small></span>
-          <span class="p-ring">${ringSVG((summary[p.id] && summary[p.id].pct) || 0)}</span>
-          <span class="p-check">${svg("check")}</span>
-        </button>`,
+        <div class="profile-row lift ${p.id === active ? "is-active" : ""}">
+          <button class="profile" data-id="${p.id}"
+            aria-pressed="${p.id === active}" aria-label="Switch to ${p.name}">
+            <span class="avatar av-${p.colour}">${p.init}</span>
+            <span class="p-meta"><b>${p.name}</b><small>${p.meta}</small></span>
+            <span class="p-ring">${ringSVG((summary[p.id] && summary[p.id].pct) || 0)}</span>
+            <span class="p-check">${svg("check")}</span>
+          </button>
+          <button class="profile-remove" data-remove="${p.id}" aria-label="Remove ${p.name}">${svg("x")}</button>
+        </div>`,
       )
       .join("")}
-      <button class="profile profile-add" data-add aria-label="Add a learner" hidden>
+      <button class="profile profile-add" data-add aria-label="Add a learner">
         <span class="avatar">${svg("plus")}</span>
         <span class="p-meta"><b>Add a learner</b><small>New profile</small></span>
       </button></nav>`;
@@ -77,7 +85,7 @@ class KalTopAvatar extends HTMLElement {
     store.on("profile", this.render);
     store.on("profiles", this.render);
     this.render();
-    this.addEventListener("click", () => window.dispatchEvent(new CustomEvent("kal:topavatar")));
+    this.addEventListener("click", () => document.dispatchEvent(new CustomEvent("kal:topavatar")));
   }
   render() {
     const profiles = store.get("profiles") || [];

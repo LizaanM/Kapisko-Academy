@@ -4,17 +4,17 @@ type: scope
 branch: oa
 locale: en-GB
 status: draft
-grade: g0r
+year: g0r
 phase: 1
 focus_sound: /ee/
 unit: 12
 title: One sound, many spellings — the /ee/ family
 minutes_per_session: 25
 mastery_gate:
-  rule: independent accuracy >= 90% + spaced retrieval review
+    rule: independent accuracy >= 90% + spaced retrieval review
 ---
 
-Weekly pathway for Grade R / Phase 1, unit 12. Mirrors the prototype in
+Weekly pathway for Reception (Grade R) / Phase 1, unit 12. Mirrors the prototype in
 `dashboard.html` — the web dashboard is a generated consumer of this content
 (see `docs/adr/0001`).
 
@@ -29,7 +29,7 @@ Weekly pathway for Grade R / Phase 1, unit 12. Mirrors the prototype in
 ## Sound variants taught this unit
 
 | phoneme | grapheme | example |
-|---------|----------|---------|
+| ------- | -------- | ------- |
 | /ee/    | ee       | seed    |
 | /ee/    | ea       | leaf    |
 | /ee/    | e_e      | theme   |

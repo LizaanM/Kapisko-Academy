@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Kapisko reset — return this deployment instance to its initial state.
+#
+# The app mirrors its learner plane to a local instance-state file managed by
+# apps/web/server.py (`~/.kapisko/state-<hash>.json`, OUTSIDE the repository).
+# Deleting it makes the next app boot treat the instance as fresh: it clears
+# its `kap.*` localStorage keys and shows the welcome screen again.
+# Learner data itself never leaves the browser profile (ADR-0002).
+#
+# Usage:  ./reset
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+APP_DIR="$(cd "${ROOT}/apps/web" && pwd)"
+
+# Must match apps/web/server.py's hash of the same directory.
+KEY="$(printf '%s' "${APP_DIR}" | shasum -a 256 | awk '{print $1}' | cut -c1-16)"
+STATE_FILE="${HOME}/.kapisko/state-${KEY}.json"
+
+if [ -f "${STATE_FILE}" ]; then
+  rm -f "${STATE_FILE}"
+  echo "Kapisko state cleared: ${STATE_FILE}"
+else
+  echo "No Kapisko state file found — nothing to reset."
+fi
+
+echo "Now reload the Kapisko app in your browser to return to the welcome screen."

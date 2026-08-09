@@ -43,7 +43,9 @@
 }
 
 .brand-text strong {
-    font-size: 15px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
     letter-spacing: 0.01em;
 }
 
@@ -69,6 +71,14 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.profile-row {
+    position: relative;
+}
+
+.profile-row .profile {
+    padding-right: 44px;
 }
 
 .profile {
@@ -100,14 +110,52 @@
     box-shadow: var(--e-4);
 }
 
-.profile.is-active {
+.profile.is-active,
+.profile-row.is-active .profile {
     background: var(--card);
     border-color: var(--line-2);
     box-shadow: var(--e-2);
 }
 
-.profile.is-active:hover {
+.profile.is-active:hover,
+.profile-row.is-active .profile:hover {
     box-shadow: var(--e-4);
+}
+
+.profile-remove {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+        opacity 0.18s var(--ease),
+        background-color 0.18s var(--ease),
+        color 0.18s var(--ease);
+}
+
+.profile-row:hover .profile-remove,
+.profile-remove:focus-visible {
+    opacity: 1;
+}
+
+.profile-remove:hover {
+    background: var(--rose-2, rgba(255, 178, 178, 0.45));
+    color: var(--rose-deep, var(--ink));
+}
+
+.profile-remove svg {
+    width: 14px;
+    height: 14px;
 }
 
 .p-meta {
@@ -436,7 +484,9 @@ body.drawer-open .backdrop {
 
 .hero h1 {
     margin: 16px 0 10px;
-    font-size: clamp(1.85rem, 3.2vw, 2.55rem);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.4vw, 2.7rem);
     line-height: 1.12;
     letter-spacing: -0.01em;
 }

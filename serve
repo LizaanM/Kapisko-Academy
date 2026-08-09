@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Kapisko dev server — serves the web app plus the /api/state reset hook.
+#
+# Use THIS (not `python3 -m http.server`) if you want `./reset` to work, since
+# it also manages the instance state file that reset relies on.
+#
+# Usage:  ./serve [port]        (default port 8000)
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+PORT="${1:-8000}"
+
+exec python3 "${ROOT}/apps/web/server.py" "${PORT}"

@@ -1,6 +1,6 @@
 # `sat` branch — US AP/SAT curriculum
 
-Grade R to 12, aligned to the US AP / SAT pathway. Default locale: `en-US`.
+Reception (Grade R) to year 13, aligned to the US AP / SAT pathway. Default locale: `en-US`.
 
 This branch owns **all** of its content. Skeleton in place; content will mirror the shape of `oa` but is fully independent (ADR-0004):
 

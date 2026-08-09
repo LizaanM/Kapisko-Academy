@@ -1,4 +1,8 @@
 :root {
+    /* Typography — bookish serif for display, clean rounded sans for UI */
+    --font-display: "Zilla Slab", "Inclusive Sans", Georgia, serif;
+    --font-ui: "Inclusive Sans", system-ui, sans-serif;
+
     /* Palette — warm pastels on cream */
     --cream: #faf5eb;
     --cream-2: #f3ecdc;

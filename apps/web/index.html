@@ -6,7 +6,7 @@
         <title>Kapisko Academy · Weekly Phonics Pathway</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="styles/tokens.css" />
         <link rel="stylesheet" href="styles/base.css" />
         <link rel="stylesheet" href="styles/components.css" />
@@ -60,7 +60,7 @@
                 <section class="hero reveal lift" style="--d: 0.02s">
                     <div class="hero-main">
                         <span class="eyebrow">Week 12 · Phonics · Term 1</span>
-                        <h1 id="greeting">Good morning, Mia.</h1>
+                        <h1 id="greeting">Welcome to Kapisko Academy.</h1>
                         <p class="hero-sub">
                             One sound, many spellings. This week we get to know<br />
                             <span class="sound-tile">/ee/</span>
@@ -100,9 +100,28 @@
             <footer class="foot">Made with care · Kapisko Academy (Not-for-profit) · Open source curriculum</footer>
         </main>
 
+        <kal-onboarding></kal-onboarding>
         <kal-card-box></kal-card-box>
+        <kal-guardian></kal-guardian>
         <kal-snackbar class="snack" role="status" aria-live="polite"></kal-snackbar>
 
+        <script>
+            // Static-first PWA (ADR-0007): the app is served over HTTP so its
+            // ES modules and fetch() work. If opened straight from disk the
+            // browser blocks both, leaving only the static shell — catch that
+            // here and say so instead of looking broken.
+            if (window.location.protocol === "file:") {
+                var el = document.createElement("div");
+                el.className = "served-over-http";
+                el.setAttribute("role", "alert");
+                el.innerHTML =
+                    "<b>Kapisko Academy needs a local server.</b>" +
+                    "<span>ES modules are blocked over <code>file://</code>. Run <code>python3 -m http.server</code> " +
+                    "from <code>apps/web/</code> and open <code>http://localhost:8000</code>.</span>";
+                document.body.appendChild(el);
+                document.body.classList.add("file-open");
+            }
+        </script>
         <script type="module" src="src/main.js"></script>
     </body>
 </html>

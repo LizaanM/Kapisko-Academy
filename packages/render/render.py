@@ -54,7 +54,11 @@ def collect_units(branch="oa"):
 
 
 def lesson_files(unit_dir):
-    lessons = list((unit_dir / "lessons").glob("*.md")) if (unit_dir / "lessons").is_dir() else []
+    lessons = (
+        list((unit_dir / "lessons").glob("*.md"))
+        if (unit_dir / "lessons").is_dir()
+        else []
+    )
     variants = unit_dir / "variants.md"
     files = sorted(lessons)
     extra = []
@@ -71,7 +75,7 @@ def build_unit(unit_path):
         "branch": fm.get("branch"),
         "locale": fm.get("locale", "en-GB"),
         "focus": fm.get("focus_sound", "/ee/"),
-        "grade": fm.get("grade"),
+        "year_group": fm.get("year_group"),
         "minutes_per_session": int(fm.get("minutes_per_session", 25)),
         "mastery_gate": "independent accuracy >= 90% + spaced retrieval review",
     }
@@ -114,20 +118,28 @@ def build_variants(unit_dir):
     fm = parse_frontmatter(path.read_text(encoding="utf-8"))
     unit_id = fm.get("unit") or "unit"
     rows = []
-    for line in [ln for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip().startswith("|")]:
+    for line in [
+        ln
+        for ln in path.read_text(encoding="utf-8").splitlines()
+        if ln.strip().startswith("|")
+    ]:
         cells = [c.strip().strip("`") for c in line.split("|")]
         if len(cells) >= 6 and cells[0] == "":
             _, grapheme, kind, word, card, _ = cells[:6]
             if grapheme in ("Grapheme", "----------") or not grapheme:
                 continue
-            rows.append({
-                "id": f"{unit_id}.sv.{grapheme}",
-                "phoneme": fm.get("phoneme", "/ee/"),
-                "grapheme": grapheme,
-                "kind": kind if kind in ("base", "variant", "split digraph") else kind.split(" ")[0],
-                "word": word,
-                "example": card or word,
-            })
+            rows.append(
+                {
+                    "id": f"{unit_id}.sv.{grapheme}",
+                    "phoneme": fm.get("phoneme", "/ee/"),
+                    "grapheme": grapheme,
+                    "kind": kind
+                    if kind in ("base", "variant", "split digraph")
+                    else kind.split(" ")[0],
+                    "word": word,
+                    "example": card or word,
+                }
+            )
     return rows
 
 
@@ -159,7 +171,9 @@ def emit(week, branch):
     json_path = WEB_RELEASE / f"{branch}.json"
     html_path = PRINT_RELEASE / f"{slug}.html"
     engine_path = WEB_RELEASE / "engine.js"
-    json_path.write_text(json.dumps(week, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    json_path.write_text(
+        json.dumps(week, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     html_path.write_text(render_html(week), encoding="utf-8")
     if ENGINE_SRC.is_file():
         engine_path.write_text(ENGINE_SRC.read_text(encoding="utf-8"), encoding="utf-8")
@@ -172,11 +186,15 @@ def render_html(week):
         steps = "\n".join(f"<li>{s['t']} — {s.get('n', '')}</li>" for s in day["steps"])
         rows.append(
             "<div class='day'><h2>" + day["name"] + "</h2>"
-            "<p><code>" + day.get("spell", "") + "</code> · " + day.get("focus", "") + "</p>"
+            "<p><code>"
+            + day.get("spell", "")
+            + "</code> · "
+            + day.get("focus", "")
+            + "</p>"
             "<ol>" + steps + "</ol></div>"
         )
     variants = ", ".join("<code>" + v["grapheme"] + "</code>" for v in week["variants"])
-    grade = week["unit"].get("grade") or ""
+    year_group = week["unit"].get("year_group") or ""
     gate = week["unit"].get("mastery_gate") or ""
     return (
         "<!doctype html><html lang='en'><head><meta charset='utf-8'>"
@@ -185,9 +203,12 @@ def render_html(week):
         ".day{border:1px solid #ddd;border-radius:1rem;padding:1rem 1.5rem;margin:1rem 0}"
         "code{background:#f5efe6}.stamp{margin-bottom:1rem}</style></head><body>"
         "<h1>" + week["unit"]["title"] + "</h1>"
-        "<p>" + week["unit"]["focus"] + " · " + grade + " · " + variants + "</p>"
-        "<p class='stamp'><strong>Mastery gate:</strong> " + gate + "</p>"
-        + "".join(rows) + "</body></html>"
+        "<p>" + week["unit"]["focus"] + " · " + year_group + " · " + variants + "</p>"
+        "<p class='stamp'><strong>Mastery gate:</strong> "
+        + gate
+        + "</p>"
+        + "".join(rows)
+        + "</body></html>"
     )
 
 
