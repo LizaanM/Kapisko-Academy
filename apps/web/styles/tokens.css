@@ -4,9 +4,9 @@
     --font-ui: "Inclusive Sans", system-ui, sans-serif;
 
     /* Palette — warm pastels on cream */
-    --cream: #faf5eb;
+    --cream: #f7f3eb;
     --cream-2: #f3ecdc;
-    --card: #ffffff;
+    --card: #fffcf5;
     --ink: #2b2418;
     --ink-2: #6f6657;
     --ink-3: #a0947f;
@@ -15,7 +15,16 @@
 
     --mustard: #f5e29b;
     --mustard-2: #fbefc4;
-    --mustard-deep: #e8cb5f;
+    --mustard-deep: #e6c14e;
+
+    /* Golden accents — the lively end of the mustard family. Shared gradient
+       and warm glow so every yellow highlight moves together. */
+    --gold: #f3c454;
+    --gold-bright: #ffd87a;
+    --gold-deep: #e2ae49;
+    --gold-grad: linear-gradient(180deg, #ffe89d 0%, #f4cd66 50%, #edbc54 100%);
+    --gold-glow: 0 2px 10px rgba(236, 177, 63, 0.26);
+    --gold-glow-strong: 0 4px 16px rgba(236, 177, 63, 0.4);
 
     --peach: #ffd9c2;
     --peach-deep: #f3a277;
@@ -32,8 +41,8 @@
     /* Radius — 4px standard, scaled up for structural cards */
     --r-sm: 4px;
     --r-md: 10px;
-    --r-card: 20px;
-    --r-hero: 26px;
+    --r-card: 12px;
+    --r-hero: 12px;
 
     /* Material elevation ladder (warm-tinted, 2-layer shadows) */
     --e-0: none;

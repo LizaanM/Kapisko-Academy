@@ -33,8 +33,6 @@ class KalProfileList extends HTMLElement {
             aria-pressed="${p.id === active}" aria-label="Switch to ${p.name}">
             <span class="avatar av-${p.colour}">${p.init}</span>
             <span class="p-meta"><b>${p.name}</b><small>${p.meta}</small></span>
-            <span class="p-ring">${ringSVG((summary[p.id] && summary[p.id].pct) || 0)}</span>
-            <span class="p-check">${svg("check")}</span>
           </button>
           <button class="profile-remove" data-remove="${p.id}" aria-label="Remove ${p.name}">${svg("x")}</button>
         </div>`,

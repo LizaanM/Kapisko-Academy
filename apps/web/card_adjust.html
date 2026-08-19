@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kapisko · Greeting card adjuster</title>
+    <style>
+      /* ── Tokens (copy of styles/tokens.css) ───────────────────────────── */
+      :root {
+        --font-display: "Zilla Slab", "Inclusive Sans", Georgia, serif;
+        --font-ui: "Inclusive Sans", system-ui, sans-serif;
+
+        --cream: #f7f3eb;
+        --cream-2: #f3ecdc;
+        --card: #fffcf5;
+        --ink: #2b2418;
+        --ink-2: #6f6657;
+        --ink-3: #a0947f;
+        --line: #e8e0cf;
+        --line-2: #d8cdb6;
+
+        --mustard: #f5e29b;
+        --mustard-2: #fbefc4;
+        --mustard-deep: #e6c14e;
+
+        --gold: #f3c454;
+        --gold-bright: #ffd87a;
+        --gold-deep: #e2ae49;
+        --gold-grad: linear-gradient(180deg, #ffe89d 0%, #f4cd66 50%, #edbc54 100%);
+        --gold-glow: 0 2px 10px rgba(236, 177, 63, 0.26);
+        --gold-glow-strong: 0 4px 16px rgba(236, 177, 63, 0.4);
+
+        --r-sm: 4px;
+        --r-md: 10px;
+        --r-card: 12px;
+        --r-hero: 12px;
+
+        --e-1: 0 1px 2px 0 rgba(61, 46, 28, 0.12), 0 1px 3px 1px rgba(61, 46, 28, 0.08);
+        --e-2: 0 1px 2px 0 rgba(61, 46, 28, 0.12), 0 2px 6px 2px rgba(61, 46, 28, 0.08);
+        --e-3: 0 1px 3px 0 rgba(61, 46, 28, 0.12), 0 4px 8px 3px rgba(61, 46, 28, 0.08);
+        --e-4: 0 2px 3px 0 rgba(61, 46, 28, 0.14), 0 6px 10px 4px rgba(61, 46, 28, 0.09);
+        --e-6: 0 2px 3px 0 rgba(61, 46, 28, 0.15), 0 8px 12px 5px rgba(61, 46, 28, 0.11);
+        --e-8: 0 4px 4px 0 rgba(61, 46, 28, 0.16), 0 8px 12px 6px rgba(61, 46, 28, 0.12);
+        --e-16: 0 8px 8px 0 rgba(61, 46, 28, 0.16), 0 16px 20px 10px rgba(61, 46, 28, 0.13);
+
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+        /* Adjustable spacing — these are the ONLY values the toolbar edits.
+           Defaults match the app (components.css). */
+        --wave-mt: 28px;   /* .on-hello .wave-wrap  margin-top    */
+        --wave-mb: 20px;   /* .on-hello .wave-wrap  margin-bottom ← the gap above "Let's start" */
+        --wave-h: 68px;    /* .on-hello .wave-wrap  height        */
+        --wave-w: 460px;   /* .on-hello .wave-wrap  width         */
+        --h1-mb: 28px;      /* .on-hello h1          margin-bottom ← the gap above the mascot */
+        --mascot-mb: 10px; /* .on-mascot            margin-bottom */
+        --card-w: 520px;   /* .on-hello             width         */
+        --card-pt: 28px;   /* .on-hello             padding-top   */
+        --card-px: 28px;   /* .on-hello             padding-x     */
+        --card-pb: 34px;   /* .on-hello             padding-bottom*/
+      }
+
+      /* ── Base ─────────────────────────────────────────────────────────── */
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: var(--font-ui);
+        color: var(--ink);
+        background: var(--cream);
+        overflow-x: hidden;
+      }
+
+      /* ── Motion (copy of @keyframes rise in components.css) ───────────── */
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(16px) scale(0.985); }
+        to { opacity: 1; }
+      }
+
+      /* ── Stage: cream backdrop, card centred like the dashboard overlay ── */
+      .stage {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      /* ── The greeting card (.on-card.on-hello, from components.css) ───── */
+      .on-card {
+        position: relative;
+        width: min(92vw, var(--card-w));
+        border-radius: var(--r-hero);
+        text-align: center;
+        animation: rise 0.5s var(--ease) both;
+      }
+
+      .on-hello {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: linear-gradient(
+          165deg,
+          rgba(255, 253, 247, 0.92),
+          rgba(255, 250, 240, 0.88) 45%,
+          rgba(255, 248, 236, 0.92)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        box-shadow:
+          var(--e-8),
+          inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        padding: var(--card-pt) var(--card-px) var(--card-pb);
+      }
+
+      .on-hello h1 {
+        margin: 0 0 var(--h1-mb);
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 2.4rem;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        text-shadow: none;
+      }
+
+      .on-mascot {
+        width: min(60%, 264px);
+        height: auto;
+        margin: 4px auto var(--mascot-mb);
+        display: block;
+      }
+
+      /* ── Audio panel ──────────────────────────────────────────────────── */
+      .wave-wrap {
+        position: relative;
+        width: min(100%, var(--wave-w));
+        height: var(--wave-h);
+        margin: var(--wave-mt) auto var(--wave-mb);
+        border-radius: var(--r-md);
+        border: 1px solid rgba(232, 203, 95, 0.45);
+        background: linear-gradient(160deg, var(--mustard), var(--cream-2) 45%, var(--mustard));
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.7),
+          0 0 16px rgba(232, 203, 95, 0.2),
+          var(--e-1);
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .wave-wrap canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        opacity: 0.85;
+      }
+
+      .wave-toggle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        background: var(--gold-grad);
+        color: #2b2418;
+        cursor: pointer;
+        box-shadow:
+          0 0 0 3px rgba(251, 239, 196, 0.4),
+          0 0 16px 1px rgba(232, 203, 95, 0.4),
+          var(--e-2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transition:
+          opacity 0.28s var(--ease),
+          transform 0.28s var(--ease),
+          visibility 0.28s var(--ease),
+          box-shadow 0.24s var(--ease),
+          filter 0.24s var(--ease);
+      }
+
+      .wave-toggle:hover {
+        box-shadow:
+          0 0 0 3px rgba(251, 239, 196, 0.5),
+          0 0 20px 3px rgba(232, 203, 95, 0.6),
+          var(--e-6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        filter: saturate(1.08);
+      }
+
+      .wave-toggle svg {
+        width: 23px;
+        height: 23px;
+      }
+
+      .wave-wrap.is-live .wave-toggle {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, -50%) scale(0.8);
+        pointer-events: none;
+      }
+
+      /* ── The CTA button (.btn.btn-primary.on-cta) ─────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 0 20px;
+        height: 46px;
+        border-radius: var(--r-sm);
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        box-shadow: var(--e-1);
+        transition:
+          box-shadow 0.24s var(--ease),
+          transform 0.24s var(--ease),
+          filter 0.24s var(--ease);
+      }
+
+      .btn svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .on-cta {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        font-size: 1.26rem;
+        padding: 0.85em 1.1em;
+        background: var(--gold-grad);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: #2b2418;
+        box-shadow:
+          var(--gold-glow),
+          var(--e-3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      }
+
+      .on-cta:hover {
+        box-shadow:
+          var(--gold-glow-strong),
+          var(--e-6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transform: translateY(-1px);
+        filter: saturate(1.06);
+      }
+
+      .on-cta:active {
+        box-shadow:
+          var(--e-8),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transform: none;
+        filter: none;
+      }
+
+      .on-cta::after {
+        content: "";
+        position: absolute;
+        top: -60%;
+        left: -80%;
+        width: 45%;
+        height: 220%;
+        transform: rotate(18deg);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+        pointer-events: none;
+        transition: left 1.1s var(--ease);
+      }
+
+      .on-cta:hover::after {
+        left: 135%;
+      }
+
+      /* ── Toolbar ──────────────────────────────────────────────────────── */
+      .panel {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 248px;
+        max-height: calc(100vh - 32px);
+        overflow: auto;
+        padding: 16px 16px 14px;
+        background: var(--card);
+        border: 1px solid var(--line-2);
+        border-radius: var(--r-card);
+        box-shadow: var(--e-16);
+        font-size: 12.5px;
+        z-index: 50;
+      }
+
+      .panel h2 {
+        margin: 0 0 4px;
+        font-family: var(--font-display);
+        font-size: 15px;
+      }
+
+      .panel .hint {
+        margin: 0 0 12px;
+        color: var(--ink-3);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+
+      .panel label {
+        display: block;
+        margin: 9px 0 0;
+      }
+
+      .panel .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2px;
+      }
+
+      .panel .row b {
+        font-weight: 600;
+      }
+
+      .panel .row span {
+        color: var(--ink-2);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .panel input[type="range"] {
+        width: 100%;
+        accent-color: var(--mustard-deep);
+      }
+
+      .panel .btn-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .panel button {
+        flex: 1;
+        padding: 7px 0;
+        border-radius: var(--r-sm);
+        border: 1px solid var(--line-2);
+        background: var(--cream);
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .panel button:hover {
+        background: var(--mustard-2);
+      }
+
+      .panel .target {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--line-2);
+        color: var(--ink-3);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 760px) {
+        .panel {
+          position: static;
+          width: 100%;
+          margin: 0 0 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="on-card on-hello reveal lift">
+        <h1>Hello, Mia!</h1>
+        <img class="on-mascot" src="assets/images/mascot (Avi)/Avi_greeting.png" alt="Avi the Aviary" />
+        <div class="wave-wrap" data-play>
+          <canvas aria-label="Audio wave"></canvas>
+          <button class="wave-toggle" aria-label="Play Avi's greeting">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 5.5v13l11-6.5Z" fill="currentColor" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+        <button class="btn on-cta">
+          Let's start
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <h2>Greeting card adjuster</h2>
+      <p class="hint">Drag a slider to change a spacing live. Note the value, then copy it into
+        <code>styles/components.css</code> (the matching rule is named on each row).</p>
+
+      <label>
+        <span class="row"><b>Gap above “Let's start”</b><span id="v-wave-mb"></span></span>
+        <input type="range" id="r-wave-mb" min="0" max="80" step="1" value="20" />
+        <span class="hint">.on-hello .wave-wrap → margin-bottom</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Gap above the audio</b><span id="v-wave-mt"></span></span>
+        <input type="range" id="r-wave-mt" min="0" max="80" step="1" value="28" />
+        <span class="hint">.on-hello .wave-wrap → margin-top</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Audio panel width</b><span id="v-wave-w"></span></span>
+        <input type="range" id="r-wave-w" min="180" max="460" step="2" value="460" />
+        <span class="hint">.on-hello .wave-wrap → width</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Audio panel height</b><span id="v-wave-h"></span></span>
+        <input type="range" id="r-wave-h" min="40" max="120" step="1" value="68" />
+        <span class="hint">.on-hello .wave-wrap → height</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Gap above the mascot</b><span id="v-h1-mb"></span></span>
+        <input type="range" id="r-h1-mb" min="0" max="60" step="1" value="28" />
+        <span class="hint">.on-hello h1 → margin-bottom</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Gap under the mascot</b><span id="v-mascot-mb"></span></span>
+        <input type="range" id="r-mascot-mb" min="0" max="60" step="1" value="10" />
+        <span class="hint">.on-mascot → margin-bottom</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Card width</b><span id="v-card-w"></span></span>
+        <input type="range" id="r-card-w" min="360" max="720" step="2" value="520" />
+        <span class="hint">.on-hello → width</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Card side padding</b><span id="v-card-px"></span></span>
+        <input type="range" id="r-card-px" min="12" max="80" step="1" value="28" />
+        <span class="hint">.on-hello → padding-inline</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Card top padding</b><span id="v-card-pt"></span></span>
+        <input type="range" id="r-card-pt" min="12" max="90" step="1" value="28" />
+        <span class="hint">.on-hello → padding-top</span>
+      </label>
+
+      <label>
+        <span class="row"><b>Card bottom padding</b><span id="v-card-pb"></span></span>
+        <input type="range" id="r-card-pb" min="12" max="90" step="1" value="34" />
+        <span class="hint">.on-hello → padding-bottom</span>
+      </label>
+
+      <div class="btn-row">
+        <button id="reset" type="button">Reset</button>
+        <button id="copy" type="button">Copy CSS</button>
+      </div>
+
+      <div class="target" id="target"></div>
+    </aside>
+
+    <script>
+      // ── Toolbar wiring: each slider maps to a CSS variable on :root ──────
+      const SLIDERS = {
+        "r-wave-mb":  ["--wave-mb", "v-wave-mb"],
+        "r-wave-mt":  ["--wave-mt", "v-wave-mt"],
+        "r-wave-w":   ["--wave-w",  "v-wave-w"],
+        "r-wave-h":   ["--wave-h",  "v-wave-h"],
+        "r-h1-mb":    ["--h1-mb",   "v-h1-mb"],
+        "r-mascot-mb":["--mascot-mb","v-mascot-mb"],
+        "r-card-w":   ["--card-w",  "v-card-w"],
+        "r-card-px":  ["--card-px", "v-card-px"],
+        "r-card-pt":  ["--card-pt", "v-card-pt"],
+        "r-card-pb":  ["--card-pb", "v-card-pb"],
+      };
+      const DEFAULTS = {
+        "--wave-mb": "20px", "--wave-mt": "28px", "--wave-w": "460px", "--wave-h": "68px",
+        "--h1-mb": "28px", "--mascot-mb": "10px", "--card-w": "520px", "--card-px": "28px",
+        "--card-pt": "28px", "--card-pb": "34px",
+      };
+
+      const root = document.documentElement;
+      for (const id of Object.keys(SLIDERS)) {
+        const input = document.getElementById(id);
+        input.addEventListener("input", () => {
+          const [prop, label] = SLIDERS[id];
+          root.style.setProperty(prop, input.value + "px");
+          document.getElementById(label).textContent = input.value + "px";
+          updateTarget();
+        });
+        input.dispatchEvent(new Event("input"));
+      }
+
+      document.getElementById("reset").addEventListener("click", () => {
+        for (const [id, [prop]] of Object.entries(SLIDERS)) {
+          const val = parseInt(DEFAULTS[prop], 10);
+          const input = document.getElementById(id);
+          input.value = val;
+          input.dispatchEvent(new Event("input"));
+        }
+      });
+
+      // Copy the live values as ready-to-paste CSS rules.
+      function updateTarget() {
+        const cur = (p) => root.style.getPropertyValue(p) || DEFAULTS[p];
+        document.getElementById("target").textContent =
+          ".on-hello .wave-wrap { width: min(100%, " + cur("--wave-w") + "); margin: " +
+          cur("--wave-mt") + " auto " + cur("--wave-mb") +
+          "; height: " + cur("--wave-h") + "; }\n" +
+          ".on-hello h1 { margin: 0 0 " + cur("--h1-mb") + "; }\n" +
+          ".on-mascot { margin: 4px auto " + cur("--mascot-mb") + "; }\n" +
+          ".on-hello { width: min(92vw, " + cur("--card-w") + "); padding: " +
+          cur("--card-pt") + " " + cur("--card-px") + " " + cur("--card-pb") + "; }";
+      }
+      document.getElementById("copy").addEventListener("click", () => {
+        navigator.clipboard.writeText(document.getElementById("target").textContent);
+      });
+      updateTarget();
+
+      // ── Audio wave (copied from onboarding.js draw(), step-3 colours) ────
+      const wrap = document.querySelector(".wave-wrap");
+      const cv = wrap.querySelector("canvas");
+      const toggle = wrap.querySelector(".wave-toggle");
+      const g = cv.getContext("2d");
+      let live = false, raf = 0, smooth = new Float32Array(48).fill(0);
+      let ctx = null, analyser = null, osc = null, gain = null;
+
+      toggle.addEventListener("click", () => togglePlay());
+      wrap.addEventListener("click", () => togglePlay());
+
+      async function togglePlay() {
+        if (live) {
+          live = false;
+          try { osc.stop(); } catch (e) {}
+          osc = gain = null;
+          wrap.classList.remove("is-live");
+          return;
+        }
+        try {
+          if (!ctx) {
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = ctx.createAnalyser();
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.85;
+          }
+          if (ctx.state === "suspended") await ctx.resume();
+          osc = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          osc.type = "sine"; osc.frequency.value = 440;
+          osc2.type = "sine"; osc2.frequency.value = 660;
+          gain = ctx.createGain();
+          gain.gain.value = 0.05;
+          osc.connect(gain); osc2.connect(gain);
+          gain.connect(analyser); analyser.connect(ctx.destination);
+          osc.start(); osc2.start();
+          live = true;
+          wrap.classList.add("is-live");
+        } catch (e) {
+          // No audio available (e.g. file://) — the wave still animates.
+          live = true;
+          wrap.classList.add("is-live");
+        }
+      }
+
+      function tick() {
+        if (!document.body.contains(cv)) return;
+        draw();
+        raf = requestAnimationFrame(tick);
+      }
+
+      function draw() {
+        const dpr = window.devicePixelRatio || 1;
+        const w = cv.clientWidth, h = cv.clientHeight;
+        if (cv.width !== w * dpr || cv.height !== h * dpr) {
+          cv.width = w * dpr; cv.height = h * dpr;
+        }
+        g.save();
+        g.scale(dpr, dpr);
+        g.clearRect(0, 0, w, h);
+
+        const mid = h / 2;
+        const N = 48, bw = w / N, t = performance.now() / 1000;
+        let levels;
+
+        if (live && analyser && ctx && ctx.state === "running") {
+          const freq = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(freq);
+          let sum = 0;
+          for (let j = 0; j < freq.length; j++) sum += freq[j];
+          const e = sum / freq.length / 255;
+          const breath = 0.6 + e * 1.0;
+          levels = new Array(N);
+          for (let i = 0; i < N; i++) {
+            const a = Math.sin(i * 0.55 - t * 3.6);
+            const b = Math.sin(i * 1.1 + t * 2.8);
+            const ripple = Math.sin(i * 2.3 - t * 6.4) * Math.sin(i * 0.5 + t * 3.1);
+            const organic = 0.2 + 0.4 * (0.5 + 0.5 * (0.5 * a + 0.3 * b)) + 0.13 * (0.5 + 0.5 * ripple);
+            levels[i] = Math.min(1, organic * breath);
+          }
+        } else {
+          levels = new Array(N);
+          for (let i = 0; i < N; i++) {
+            const a = Math.sin(i * 0.55 - t * 3.6);
+            const b = Math.sin(i * 1.1 + t * 2.8);
+            const ripple = Math.sin(i * 2.3 - t * 6.4) * Math.sin(i * 0.5 + t * 3.1);
+            levels[i] =
+              0.2 + 0.4 * (0.5 + 0.5 * (0.5 * a + 0.3 * b)) +
+              0.13 * (0.5 + 0.5 * ripple) + 0.06 * Math.sin(t * 5.5 + i);
+          }
+        }
+
+        const k = live ? 0.4 : 0.28;
+        for (let i = 0; i < N; i++) smooth[i] += (levels[i] - smooth[i]) * k;
+
+        const barGrad = ["rgba(248, 205, 92, 0.98)", "rgba(232, 183, 63, 0.9)", "rgba(248, 205, 92, 0.98)"];
+        const grad = g.createLinearGradient(0, mid - h * 0.42, 0, mid + h * 0.42);
+        grad.addColorStop(0, barGrad[0]);
+        grad.addColorStop(0.5, barGrad[1]);
+        grad.addColorStop(1, barGrad[2]);
+        g.fillStyle = grad;
+        g.shadowColor = "rgba(244, 196, 80, 0.32)";
+        g.shadowBlur = 6;
+
+        for (let i = 0; i < N; i++) {
+          const cx = (i + 0.5) / N;
+          const taper = 0.5 - 0.5 * Math.cos(cx * Math.PI * 2);
+          const v = Math.max(0.03, smooth[i] * taper);
+          const amp = v * (h * 0.48);
+          const x = i * bw + bw * 0.2;
+          const br = bw * 0.42;
+          const rr = Math.min(5, br / 2);
+          const y0 = mid - amp;
+          g.beginPath();
+          g.moveTo(x, y0 + rr);
+          g.arc(x + rr, y0 + rr, rr, Math.PI, 1.5 * Math.PI);
+          g.arc(x + br - rr, y0 + rr, rr, 1.5 * Math.PI, 0);
+          g.arc(x + br - rr, mid + amp - rr, rr, 0, 0.5 * Math.PI);
+          g.arc(x + rr, mid + amp - rr, rr, 0.5 * Math.PI, Math.PI);
+          g.moveTo(x, y0 + rr);
+          g.fill();
+        }
+        g.restore();
+      }
+
+      tick();
+    </script>
+  </body>
+</html>

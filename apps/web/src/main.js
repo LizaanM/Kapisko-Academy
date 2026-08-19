@@ -134,7 +134,7 @@ async function init() {
         if (ob) {
             ob.step = 2;
             ob.colour = "";
-            ob.show();
+            ob.show(true);
             return;
         }
         snack("Ask your teacher to assist you.");
@@ -163,6 +163,8 @@ async function init() {
         });
     });
 
+    const teacherBtn = $("#teacherBtn");
+    const exitTeacherBtn = $("#exitTeacherBtn");
     const settingsBtn = $("#settingsBtn");
     const reportsBtn = $("#reportsBtn");
     const bellBtn = $("#bellBtn");
@@ -170,6 +172,18 @@ async function init() {
     const startBtn = $("#startBtn");
     const variantRow = $("#variantRow");
 
+    if (teacherBtn)
+        teacherBtn.addEventListener("click", () => {
+            const gate = $("kal-guardian");
+            if (gate)
+                gate.open({
+                    title: "Teacher’s dashboard",
+                    brief: "Enter your supervisor password to open teacher tools.",
+                    action: () => document.body.classList.add("teacher-mode"),
+                });
+        });
+    if (exitTeacherBtn)
+        exitTeacherBtn.addEventListener("click", () => document.body.classList.remove("teacher-mode"));
     if (settingsBtn)
         settingsBtn.addEventListener("click", () => {
             const gate = $("kal-guardian");

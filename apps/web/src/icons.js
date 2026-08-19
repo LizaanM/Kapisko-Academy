@@ -19,6 +19,8 @@ const ICONS = {
   "chev-r": '<path d="m9.5 6 6 6-6 6"/>',
   "chev-d": '<path d="m6 9.5 6 6 6-6"/>',
   x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  teacher:
+    '<path d="M12 3.5 2.8 8l9.2 4.5L21.2 8Z"/><path d="M6 10.6v4c0 1.4 2.7 2.4 6 2.4s6-1 6-2.4v-4"/><path d="M21.2 8v4.4"/>',
   gear: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10M16 4v6M6 14v6"/>',
   chart: '<path d="M5 20v-7M10 20V4M15 20v-4M20 20V9"/>',
 };

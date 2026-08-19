@@ -30,6 +30,13 @@ class Handler(SimpleHTTPRequestHandler):
 
     # --- helpers ---------------------------------------------------------
 
+    def end_headers(self):
+        # No long-lived caching for a local instance server: never let a
+        # browser serve a stale asset (e.g. a swapped-out audio clip) from its
+        # HTTP cache. Last-Modified + If-Modified-Since still allow 304s.
+        self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
+
     def _json(self, obj, status=200):
         body = json.dumps(obj).encode("utf-8")
         self.send_response(status)

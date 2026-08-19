@@ -41,12 +41,12 @@ class KalGuardian extends HTMLElement {
         <form autocomplete="off">
           <label class="on-label">
             <span>Parent or teacher password</span>
-            <input class="on-input" type="password" name="guardian" autocomplete="current-password" placeholder="Grown-up password" maxlength="64" />
+            <input class="on-input" type="password" name="guardian" autocomplete="current-password" placeholder="Password..." maxlength="64" />
             <p class="on-guard-err" data-err hidden>That password doesn’t match. Ask your teacher for assistance.</p>
           </label>
           <div class="gate-actions">
-            <button class="btn btn-ghost" data-cancel>Cancel</button>
-            <button class="btn btn-primary" data-confirm>Confirm</button>
+            <button class="btn btn-ghost" type="button" data-cancel>Cancel</button>
+            <button class="btn btn-primary" type="submit" data-confirm>Confirm</button>
           </div>
         </form>
       </div>`;

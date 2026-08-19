@@ -3,11 +3,20 @@ import { learner } from "../learner.js";
 import { svg } from "../icons.js";
 
 const AUDIO_SRC = "./assets/audio/welcome.wav";
+// Avi's hello: the per-learner welcome card clip. Played on tap from the card's
+// wave bar, exactly like the first-run welcome message.
+const AUDIO_AVI_SRC = "./assets/audio/Avi_introduction.wav";
 // Second, shorter clip: a one-shot spoken nudge that plays automatically once
 // the grown-up clicks through to the Add-learner card — never while the welcome
 // message itself is still audible, never again, and stopped the moment they go
 // back. (It also primes browsers' autoplay gate so later taps are reliable.)
 const AUDIO_PART2_SRC = "./assets/audio/welcome_part2.wav";
+const MASCOT_SRC = "assets/images/mascot (Avi)/Avi_greeting.png";
+const esc = (s) =>
+    String(s).replace(
+        /[&<>"']/g,
+        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+    );
 const YEAR_GROUPS = ["Reception (Grade R)", "Year 1", "Year 2", "Year 3"];
 const SWATCHES = ["peach", "sky", "mint", "lilac", "rose"];
 
@@ -19,7 +28,10 @@ class KalOnboarding extends HTMLElement {
         this.step = 1;
         this.colour = "";
         this.yearGroup = "";
+        this._yearActive = 0;
         this.hasAudio = false;
+        this.avi = null;
+        this.aviLoaded = false;
         this.live = false;
         this.raf = 0;
         this.preloaded = false;
@@ -30,7 +42,16 @@ class KalOnboarding extends HTMLElement {
         this.part2Live = false;
         this.addEventListener("click", (e) => this.onClick(e));
         this.addEventListener("input", (e) => {
-            if (e.target.closest("[data-live]")) this.updatePreview();
+            if (e.target.closest("[data-live]")) {
+                const name = e.target.closest('[name="name"]');
+                if (name && name.value) {
+                    name.value = name.value.replace(
+                        /\b\p{L}/gu,
+                        (c) => c.toUpperCase(),
+                    );
+                }
+                this.updatePreview();
+            }
             if (e.target.closest('[name="guardian"]')) {
                 const err = this.querySelector("[data-form-err]");
                 if (err) err.classList.remove("is-shown");
@@ -59,6 +80,16 @@ class KalOnboarding extends HTMLElement {
             }
         };
         window.addEventListener("pointerdown", this._closeYearGroup);
+        this.addEventListener("keydown", (e) => this.onKeydown(e));
+        // Close the year group menu when focus leaves it (e.g. Tab away).
+        // relatedTarget may be null during programmatic focus moves, which must
+        // NOT count as "left the menu" — that would close it mid-navigation.
+        this.addEventListener("focusout", (e) => {
+            const wrap = this.querySelector("[data-year-group]");
+            if (wrap && wrap.classList.contains("is-open") && e.relatedTarget && !wrap.contains(e.relatedTarget)) {
+                this.setYearGroupOpen(false);
+            }
+        });
     }
 
     setYearGroupOpen(open) {
@@ -67,9 +98,124 @@ class KalOnboarding extends HTMLElement {
         wrap.classList.toggle("is-open", open);
         const btn = wrap.querySelector(".on-select-btn");
         if (btn) btn.setAttribute("aria-expanded", String(open));
+        // The active row is tracked in state, not read back from the DOM, so
+        // navigation stays correct whether focus is on the button or a row.
+        if (open) this.markActiveOption(this.activeIndex());
     }
 
-    show() {
+    // Keyboard navigation for the year group listbox. The button opens on
+    // Enter/Space/arrows; once open, arrows move the highlighted option, Enter
+    // picks it, and Escape closes back to the button.
+    onKeydown(e) {
+        const wrap = this.querySelector("[data-year-group]");
+        if (!wrap) return;
+        const btn = wrap.querySelector(".on-select-btn");
+        const open = wrap.classList.contains("is-open");
+        const opts = wrap.querySelectorAll("[data-year-group-opt]");
+
+        if (e.target === btn) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (open) {
+                    this.setYearGroupOpen(false);
+                } else {
+                    wrap.classList.add("is-keyboard");
+                    this.setYearGroupOpen(true);
+                    this.focusOptionAt(this.activeIndex());
+                }
+            } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                e.preventDefault();
+                if (!open) {
+                    wrap.classList.add("is-keyboard");
+                    this.setYearGroupOpen(true);
+                    this.focusOptionAt(this.activeIndex());
+                } else {
+                    this.moveOptionFocus(e.key === "ArrowDown" ? 1 : -1);
+                }
+            } else if (e.key === "Escape" && open) {
+                e.preventDefault();
+                this.setYearGroupOpen(false);
+            }
+            return;
+        }
+
+        if (open && e.target && e.target.closest("[data-year-group-opt]")) {
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                e.preventDefault();
+                this.moveOptionFocus(e.key === "ArrowDown" ? 1 : -1);
+            } else if (e.key === "Home" || e.key === "End") {
+                e.preventDefault();
+                this.focusOptionAt(e.key === "Home" ? 0 : opts.length - 1);
+            } else if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                this.chooseYearGroup(e.target.dataset.yearGroupOpt);
+            } else if (e.key === "Escape") {
+                e.preventDefault();
+                this.setYearGroupOpen(false);
+                if (btn) btn.focus();
+            } else if (e.key === "Tab") {
+                this.setYearGroupOpen(false);
+            }
+        }
+    }
+
+    activeIndex() {
+        const opts = this.querySelectorAll("[data-year-group-opt]");
+        const sel = Array.from(opts).findIndex((o) => o.dataset.yearGroupOpt === this.yearGroup);
+        return sel >= 0 ? sel : 0;
+    }
+
+    // Single source of truth for the highlighted row. Class-driven (not
+    // :focus-visible), so the highlight is identical in every browser and
+    // always lands on exactly one option.
+    markActiveOption(idx) {
+        const opts = this.querySelectorAll("[data-year-group-opt]");
+        if (!opts.length) return;
+        idx = Math.max(0, Math.min(idx, opts.length - 1));
+        this._yearActive = idx;
+        opts.forEach((li, i) => li.classList.toggle("is-active", i === idx));
+    }
+
+    focusOptionAt(idx) {
+        this.markActiveOption(idx);
+        const opts = this.querySelectorAll("[data-year-group-opt]");
+        if (opts[this._yearActive]) opts[this._yearActive].focus();
+    }
+
+    moveOptionFocus(dir) {
+        const opts = this.querySelectorAll("[data-year-group-opt]");
+        if (!opts.length) return;
+        this.markActiveOption((this._yearActive + dir + opts.length) % opts.length);
+        if (opts[this._yearActive]) opts[this._yearActive].focus();
+    }
+
+    chooseYearGroup(value) {
+        this.yearGroup = value;
+        const label = this.querySelector("[data-year-group-label]");
+        if (label) {
+            label.textContent = value;
+            label.classList.remove("is-placeholder");
+        }
+        this.querySelector('[name="year-group"]').value = value;
+        this.querySelectorAll("[data-year-group-opt]").forEach((li) => {
+            const on = li.dataset.yearGroupOpt === value;
+            li.classList.toggle("is-selected", on);
+            li.setAttribute("aria-selected", String(on));
+        });
+        const formErr = this.querySelector("[data-form-err]");
+        if (formErr) formErr.classList.remove("is-shown");
+        this.setYearGroupOpen(false);
+        const btn = this.querySelector(".on-select-btn");
+        if (btn) btn.focus();
+    }
+
+    show(overlay) {
+        // A grown-up adding a learner against the dashboard overlays it instead
+        // of covering it with the first-run login artwork. The flag is explicit
+        // so an EMPTY dashboard still overlays; only a genuine first boot falls
+        // back to the first-run presentation (zero profiles at startup).
+        const forceOverlay = overlay === undefined ? learner.profiles().length > 0 : overlay;
+        this.classList.toggle("is-overlay", forceOverlay);
         this.classList.add("is-open");
         document.body.classList.add("onboarding");
         this.render();
@@ -88,16 +234,23 @@ class KalOnboarding extends HTMLElement {
         document.body.classList.remove("onboarding");
     }
 
+    async ensureCtx() {
+        if (!window.AudioContext) return false;
+        if (!this.ctx) this.ctx = new AudioContext();
+        if (!this.analyser) {
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 256;
+            this.analyser.smoothingTimeConstant = 0.85;
+        }
+        return true;
+    }
+
     async preloadWelcome() {
         if (this.preloaded) return;
         this.preloaded = true;
-        if (!window.AudioContext) return;
-        if (!this.ctx) this.ctx = new AudioContext();
-        this.analyser = this.ctx.createAnalyser();
-        this.analyser.fftSize = 256;
-        this.analyser.smoothingTimeConstant = 0.85;
+        if (!(await this.ensureCtx())) return;
         try {
-            const res = await fetch(AUDIO_SRC);
+            const res = await fetch(AUDIO_SRC, { cache: "no-cache" });
             const buf = await res.arrayBuffer();
             const decoded = await this.ctx.decodeAudioData(buf);
             this.audio = decoded;
@@ -107,11 +260,32 @@ class KalOnboarding extends HTMLElement {
         }
     }
 
+    async preloadAvi() {
+        if (this.aviLoaded) return;
+        this.aviLoaded = true;
+        if (!(await this.ensureCtx())) return;
+        try {
+            const res = await fetch(AUDIO_AVI_SRC, { cache: "no-cache" });
+            const buf = await res.arrayBuffer();
+            this.avi = await this.ctx.decodeAudioData(buf);
+        } catch {
+            this.avi = null;
+        }
+    }
+
     async play() {
-        if (this.step !== 1) return;
-        if (!window.AudioContext) return;
-        if (!this.ctx) await this.preloadWelcome();
-        if (!this.hasAudio) return;
+        if (this.step !== 1 && this.step !== 3) return;
+        // Already audible: an accidental tap on the play area must not restart the
+        // clip mid-way. Let the current source run to its natural end.
+        if (this.live && this.ctx && this.ctx.state === "running") return;
+        if (!(await this.ensureCtx())) return;
+        if (this.step === 1) {
+            if (!this.audio) await this.preloadWelcome();
+            if (!this.hasAudio) return;
+        } else {
+            if (!this.avi) await this.preloadAvi();
+            if (!this.avi) return;
+        }
         // (Re)start from the beginning.
         if (this.source) {
             try {
@@ -121,7 +295,7 @@ class KalOnboarding extends HTMLElement {
             }
         }
         const src = this.ctx.createBufferSource();
-        src.buffer = this.audio;
+        src.buffer = this.step === 3 ? this.avi : this.audio;
         src.connect(this.analyser);
         this.analyser.connect(this.ctx.destination);
         src.onended = () => {
@@ -180,7 +354,7 @@ class KalOnboarding extends HTMLElement {
         if (this.part2Loaded) return;
         this.part2Loaded = true;
         try {
-            const res = await fetch(AUDIO_PART2_SRC);
+            const res = await fetch(AUDIO_PART2_SRC, { cache: "no-cache" });
             const buf = await res.arrayBuffer();
             this.part2 = await this.ctx.decodeAudioData(buf);
         } catch {
@@ -297,12 +471,20 @@ class KalOnboarding extends HTMLElement {
         for (let i = 0; i < N; i++) this.smooth[i] += (levels[i] - this.smooth[i]) * k;
 
         // Centred mound: Hann taper (cosine window) — bars rise to a peak in the
-        // middle and taper to zero on both edges.
+        // middle and taper to zero on both edges. On the light hello card the bars
+        // use a deeper amber so they keep contrast against the cream player.
+        const barGrad =
+            this.step === 3
+                ? ["rgba(248, 205, 92, 0.98)", "rgba(232, 183, 63, 0.9)", "rgba(248, 205, 92, 0.98)"]
+                : ["rgba(255, 222, 130, 1)", "rgba(250, 200, 80, 0.9)", "rgba(255, 222, 130, 1)"];
         const grad = g.createLinearGradient(0, mid - h * 0.42, 0, mid + h * 0.42);
-        grad.addColorStop(0, "rgba(255, 242, 170, 1)");
-        grad.addColorStop(0.5, "rgba(255, 231, 120, 0.75)");
-        grad.addColorStop(1, "rgba(255, 242, 170, 1)");
+        grad.addColorStop(0, barGrad[0]);
+        grad.addColorStop(0.5, barGrad[1]);
+        grad.addColorStop(1, barGrad[2]);
         g.fillStyle = grad;
+        // Warm glow so the animated bars feel alive; restore() clears it after.
+        g.shadowColor = "rgba(244, 196, 80, 0.32)";
+        g.shadowBlur = 6;
 
         for (let i = 0; i < N; i++) {
             const cx = (i + 0.5) / N;
@@ -310,7 +492,7 @@ class KalOnboarding extends HTMLElement {
             const v = Math.max(0.03, this.smooth[i] * taper);
             const amp = v * (h * 0.48);
             const x = i * bw + bw * 0.2;
-            const br = bw * 0.6;
+            const br = bw * (this.step === 3 ? 0.42 : 0.6);
             const rr = Math.min(5, br / 2);
             const y0 = mid - amp;
             g.beginPath();
@@ -352,6 +534,16 @@ class KalOnboarding extends HTMLElement {
     }
 
     async onClick(e) {
+        const done = e.target.closest("[data-done]");
+        if (done) {
+            this.dismiss();
+            return;
+        }
+        const close = e.target.closest("[data-close]");
+        if (close) {
+            this.dismiss();
+            return;
+        }
         const goNext = e.target.closest("[data-next]");
         if (goNext) {
             // A clip is genuinely audible only when the context is running —
@@ -394,22 +586,13 @@ class KalOnboarding extends HTMLElement {
         const yearBtn = e.target.closest(".on-select-btn");
         if (yearBtn) {
             const wrap = this.querySelector("[data-year-group]");
+            wrap.classList.remove("is-keyboard");
             this.setYearGroupOpen(!wrap.classList.contains("is-open"));
             return;
         }
         const yearOpt = e.target.closest("[data-year-group-opt]");
         if (yearOpt) {
-            this.yearGroup = yearOpt.dataset.yearGroupOpt;
-            const label = this.querySelector("[data-year-group-label]");
-            label.textContent = this.yearGroup;
-            label.classList.remove("is-placeholder");
-            this.querySelector('[name="year-group"]').value = this.yearGroup;
-            this.querySelectorAll("[data-year-group-opt]").forEach((li) =>
-                li.classList.toggle("is-selected", li === yearOpt),
-            );
-            const formErr = this.querySelector("[data-form-err]");
-            if (formErr) formErr.classList.remove("is-shown");
-            this.setYearGroupOpen(false);
+            this.chooseYearGroup(yearOpt.dataset.yearGroupOpt);
             return;
         }
         const playBtn = e.target.closest("[data-play]");
@@ -464,7 +647,7 @@ class KalOnboarding extends HTMLElement {
             : await learner.setGuardian(pwField.value);
         if (!okGuard) {
             if (formErr) {
-                formErr.textContent = "That password doesn’t match. Ask a grown-up.";
+                formErr.textContent = "That password doesn’t match. Ask your teacher for help.";
                 formErr.classList.add("is-shown");
             }
             pwField.value = "";
@@ -472,15 +655,38 @@ class KalOnboarding extends HTMLElement {
             return;
         }
         if (formErr) formErr.classList.remove("is-shown");
-        const profile = learner.addProfile({ name, meta: yearGroup, colour: this.colour });
+        const profile = learner.addProfile({
+            name,
+            meta: yearGroup,
+            colour: this.colour,
+        });
         store.set("profiles", learner.profiles());
         store.set("profile", profile.id);
-        this.dismiss();
+        this.learnerName = profile.name;
+        this.step = 3;
+        this.render();
+        // Time-aware greeting: morning / afternoon / evening, matching the
+        // dashboard hero's phrasing (main.js syncGreeting).
+        const h = new Date().getHours();
+        const part = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+        this.querySelector(".on-hello h1").textContent = `${part}, ${profile.name.split(" ")[0]}!`;
+        // The wave loop was cancelled when the Add-learner card (no canvas) took
+        // over; bring it back so the hello card's wave is alive again.
+        this.loop();
+        // Prime Avi's greeting in the background so the first tap on the welcome
+        // card plays instantly (same pattern as the first-run welcome message).
+        this.preloadAvi();
         document.dispatchEvent(new CustomEvent("kal:learner-added", { detail: { profile } }));
     }
 
     render() {
-        this.innerHTML = `<div class="on-backdrop">${this.cardHTML()}</div>`;
+        this.dataset.step = String(this.step);
+        this.innerHTML = `<div class="on-backdrop">
+          <div class="on-brand">
+            <img class="on-brand-emblem" src="assets/images/logo/logo_emblem_only.png" alt="" />
+            <img class="on-brand-name" src="assets/images/logo/logo_name_only_white_text.png" alt="Kapisko Academy" />
+          </div>
+        ${this.cardHTML()}</div>`;
         this.updatePreview();
     }
 
@@ -489,9 +695,9 @@ class KalOnboarding extends HTMLElement {
             return `
         <div class="on-card on-welcome reveal lift">
           <h1>Welcome to<br />Kapisko Academy</h1>
-          <div class="wave-wrap">
+          <div class="wave-wrap" data-play>
             <canvas aria-label="Audio wave"></canvas>
-            <button class="wave-toggle" data-play aria-label="Play welcome message">
+            <button class="wave-toggle" aria-label="Play welcome message">
               ${svg("play")}
             </button>
           </div>
@@ -500,9 +706,30 @@ class KalOnboarding extends HTMLElement {
           </button>
         </div>`;
         }
+        if (this.step === 3) {
+            return `
+        <div class="on-card on-welcome on-hello reveal lift">
+          <h1>Hello, ${esc(this.learnerName || "friend")}!</h1>
+          <img class="on-mascot" src="${MASCOT_SRC}" alt="Avi the Aviary" />
+          <div class="wave-wrap" data-play>
+            <canvas aria-label="Audio wave"></canvas>
+            <button class="wave-toggle" aria-label="Play Avi's greeting">
+              ${svg("play")}
+            </button>
+          </div>
+          <button class="btn btn-primary on-cta" data-done>
+            Let's start ${svg("arrow")}
+          </button>
+        </div>`;
+        }
+        // Overlaid on a live dashboard (teacher adding a learner), the window
+        // closes instead of stepping back to the first-run welcome card.
+        const navBtn = this.classList.contains("is-overlay")
+            ? `<button class="icon-btn gate-x" data-close aria-label="Close">×</button>`
+            : `<button class="icon-btn gate-x" data-back aria-label="Back to welcome">${svg("chev-l")}</button>`;
         return `
       <div class="on-card on-add reveal lift">
-        <button class="on-back" data-back aria-label="Back to welcome">${svg("chev-l")}</button>
+        ${navBtn}
         <h1>Add a learner</h1>
         <p class="on-sub">Who are we learning with today?</p>
         <form class="on-form" novalidate>
@@ -518,7 +745,10 @@ class KalOnboarding extends HTMLElement {
                 ${svg("chev-d")}
               </button>
               <ul class="on-select-menu" role="listbox">
-                ${YEAR_GROUPS.map((g) => `<li role="option" data-year-group-opt="${g}" class="${g === this.yearGroup ? "is-selected" : ""}">${g}</li>`).join("")}
+                ${YEAR_GROUPS.map(
+                    (g) =>
+                        `<li role="option" data-year-group-opt="${g}" tabindex="-1" aria-selected="${g === this.yearGroup}" class="${g === this.yearGroup ? "is-selected" : ""}">${g}</li>`,
+                ).join("")}
               </ul>
             </div>
             <input type="hidden" name="year-group" value="${this.yearGroup || ""}" />
@@ -544,7 +774,7 @@ class KalOnboarding extends HTMLElement {
         <span class="avatar av-peach init" aria-hidden="true">?</span>
         <span class="on-preview-txt">
           <b>Your learner</b>
-          <small>Initials appear on their avatar</small>
+          <small>These initials will appear on their avatar</small>
         </span>
       </div>
           <button class="btn btn-primary on-submit" type="button" data-submit disabled>
